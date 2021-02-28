@@ -4,7 +4,7 @@ import lombok.Getter;
 
 public enum CategoryType {
     FOOD(1, "Food"),
-    ELECTRONICS(2, "Electronics");
+    ELECTRONICS(2, "Electronic");
 
     @Getter
     private final Integer id;

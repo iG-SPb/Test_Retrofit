@@ -4,22 +4,27 @@ import lombok.experimental.UtilityClass;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.Retrofit.Builder;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 
 @UtilityClass
 public class RetrofitUtils {
+   HttpLoggingInterceptor logging =  new HttpLoggingInterceptor(new PrettyLogger());
 
-    public Retrofit getRetrofit() {
+    public Retrofit getRetrofit() throws MalformedURLException {
         OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(Duration.ofSeconds(30L))
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .connectTimeout(Duration.ofMinutes(1l))
+                .addInterceptor(logging.setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
-        return new Builder()
-            .baseUrl("http://80.78.248.82:8189")
-            .addConverterFactory(JacksonConverterFactory.create())
-            .build();
+
+        return new Retrofit.Builder()
+                .baseUrl(ConfigUtils.getBaseUrl())
+                .client(client)
+                .addConverterFactory(JacksonConverterFactory.create())
+                .build();
     }
+
 }

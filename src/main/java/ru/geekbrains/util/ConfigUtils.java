@@ -12,6 +12,9 @@ import java.util.Properties;
 public class ConfigUtils {
     Properties prop = new Properties();
     private static InputStream configFile;
+    public static Integer baseProductId;
+    public static Integer minNegId;
+    public static Integer maxNegId;
 
     static {
         try {
@@ -24,6 +27,9 @@ public class ConfigUtils {
     @SneakyThrows
     public String getBaseUrl() {
         prop.load(configFile);
+        baseProductId = Integer.valueOf(prop.getProperty("baseProductId"));
+        minNegId = Integer.valueOf(prop.getProperty("minNegId"));
+        maxNegId = Integer.valueOf(prop.getProperty("maxNegId"));
         return prop.getProperty("url");
     }
 

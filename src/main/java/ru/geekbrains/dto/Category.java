@@ -16,12 +16,10 @@ import lombok.Data;
 
 @Data
 public class Category {
-
     @JsonProperty("id")
     private Integer id;
     @JsonProperty("title")
     private String title;
     @JsonProperty("products")
     private List<Product> products = new ArrayList<>();
-
 }

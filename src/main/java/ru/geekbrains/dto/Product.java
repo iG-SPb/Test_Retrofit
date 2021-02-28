@@ -21,7 +21,6 @@ import lombok.With;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {
-
     @JsonProperty("id")
     private Integer id;
     @JsonProperty("title")
@@ -30,5 +29,4 @@ public class Product {
     private Integer price;
     @JsonProperty("categoryTitle")
     private String categoryTitle;
-
 }

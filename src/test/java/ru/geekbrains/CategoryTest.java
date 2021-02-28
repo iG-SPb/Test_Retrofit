@@ -1,37 +1,50 @@
 package ru.geekbrains;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
+import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import retrofit2.Response;
-import retrofit2.Retrofit;
+import ru.geekbrains.base.enums.CategoryType;
 import ru.geekbrains.dto.Category;
 import ru.geekbrains.service.CategoryService;
 import ru.geekbrains.util.RetrofitUtils;
-
 import java.io.IOException;
-import java.time.Duration;
-
+import java.net.MalformedURLException;
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.geekbrains.base.enums.CategoryType.FOOD;
+import static ru.geekbrains.util.ConfigUtils.maxNegId;
+import static ru.geekbrains.util.ConfigUtils.minNegId;
 
 public class CategoryTest {
     static CategoryService categoryService;
+    static Faker faker = new Faker();
 
     @BeforeAll
-    static void beforeAll() {
+    static void beforeAll() throws MalformedURLException {
         categoryService = RetrofitUtils.getRetrofit().create(CategoryService.class);
     }
 
-    @Test
-    void getCategoryPositiveTest() throws IOException {
-
+    @ParameterizedTest
+    @EnumSource(CategoryType.class)
+    //@Step("test Post positive")
+    void getCategoryPositiveTest(CategoryType categoryType) throws IOException {
         Response<Category> response = categoryService
-                .getCategory(FOOD.getId())
+                .getCategory(categoryType.getId())
                 .execute();
-        System.out.print(response.toString());
         assertThat(response.isSuccessful()).isTrue();
-        assertThat(response.body().getId()).as("Response is Null").isEqualTo(1);
+        assert response.body() != null;
+        assertThat(response.body().getId()).as("Response is 1 or 2").isEqualTo(categoryType.getId());
     }
+
+    @Test
+    void getCategoryNegativeTest() throws IOException {
+        Integer tmpId = faker.random().nextInt(minNegId, maxNegId);
+        Response<Category> response = categoryService
+                .getCategory(tmpId)
+                .execute();
+        assert response.body() == null;
+        assertThat(response.code()).as("test").isEqualTo(404);
+    }
+
 }
