@@ -126,7 +126,7 @@ public class ProductTests {
             retrofit2.Response<ResponseBody> response =
                 productService.deleteProduct(tmpId).execute();
             assert response.body() == null;
-            assertThat(response.code()).isEqualTo(204);
+            assertThat(response.code()).isEqualTo(500);
             } catch (IOException e) {
                 e.printStackTrace();
             }

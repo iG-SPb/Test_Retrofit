@@ -44,7 +44,7 @@ public class CategoryTest {
                 .getCategory(tmpId)
                 .execute();
         assert response.body() == null;
-        assertThat(response.code()).as("test").isEqualTo(404);
+        assertThat(response.code()).as("Not response").isEqualTo(404);
     }
 
 }
