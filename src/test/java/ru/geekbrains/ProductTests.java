@@ -51,8 +51,6 @@ public class ProductTests {
         assert response.body() != null;
         productId = response.body().getId();
         baseProductId = productId;
-        System.out.println("productId - " + productId);
-        System.out.println("baseProductId - " + baseProductId);
         assertThat(response.isSuccessful()).isTrue();
     }
 
@@ -111,10 +109,7 @@ public class ProductTests {
     @Order(2)
     void modifyProductPositiveTest(CategoryType categoryType) {
         deleteFlag = Boolean.FALSE;
-        System.out.println("productId - " + productId);
-        System.out.println("baseProductId - " + baseProductId);
         productId = baseProductId;
-        System.out.println("productId - " + productId);
         retrofit2.Response<Product> response = productService
                 .modifyProduct(product.withCategoryTitle(categoryType.getTitle()).withId(productId))
                 .execute();
