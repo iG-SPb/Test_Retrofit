@@ -3,10 +3,7 @@ package ru.geekbrains;
 import com.github.javafaker.Faker;
 import lombok.SneakyThrows;
 import okhttp3.ResponseBody;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import ru.geekbrains.base.enums.CategoryType;
@@ -19,8 +16,9 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.geekbrains.util.ConfigUtils.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ProductTests {
-    Integer productId = baseProductId;
+    Integer productId;
     Faker faker = new Faker();
     public static Boolean deleteFlag;
     static ProductService productService;
@@ -43,6 +41,25 @@ public class ProductTests {
 
     @SneakyThrows
     @Test
+    @DisplayName("Create base product for Test")
+    @Order(1)
+    void createBaseProductPositiveTest() {
+        deleteFlag = Boolean.FALSE;
+        retrofit2.Response<Product> response =
+                productService.createProduct(product.withCategoryTitle(CategoryType.FOOD.getTitle()))
+                        .execute();
+        assert response.body() != null;
+        productId = response.body().getId();
+        baseProductId = productId;
+        System.out.println("productId - " + productId);
+        System.out.println("baseProductId - " + baseProductId);
+        assertThat(response.isSuccessful()).isTrue();
+    }
+
+    @SneakyThrows
+    @Test
+    @DisplayName("Product GET Positive Test")
+    @Order(3)
     void getProductTest() {
         deleteFlag = Boolean.FALSE;
         //retrofit2.Response<Product> response = productService.getProduct().execute();
@@ -51,6 +68,8 @@ public class ProductTests {
 
     @SneakyThrows
     @Test
+    @DisplayName("Product GET Id Positive Test")
+    @Order(4)
     void getProductIdPositiveTest() {
         deleteFlag = Boolean.FALSE;
         retrofit2.Response<Product> response = productService.getProductId(baseProductId).execute();
@@ -59,6 +78,8 @@ public class ProductTests {
 
     @SneakyThrows
     @Test
+    @DisplayName("Product GET Id Negative Test")
+    @Order(5)
     void getProductIdNegativeTest() {
         deleteFlag = Boolean.FALSE;
         Integer tmpId = faker.random().nextInt(minNegId, maxNegId);
@@ -69,6 +90,8 @@ public class ProductTests {
     @SneakyThrows
     @ParameterizedTest
     @EnumSource(CategoryType.class)
+    @DisplayName("Product POST Positive Test")
+    @Order(6)
     void createNewProductPositiveTest(CategoryType categoryType) {
         deleteFlag = Boolean.TRUE;
         retrofit2.Response<Product> response =
@@ -76,6 +99,7 @@ public class ProductTests {
                         .execute();
         assert response.body() != null;
         productId = response.body().getId();
+        baseProductId = productId;
         System.out.println("productId - " + productId);
         assertThat(response.isSuccessful()).isTrue();
     }
@@ -83,9 +107,14 @@ public class ProductTests {
     @SneakyThrows
     @ParameterizedTest
     @EnumSource(CategoryType.class)
+    @DisplayName("Product PUT Positive Test")
+    @Order(2)
     void modifyProductPositiveTest(CategoryType categoryType) {
         deleteFlag = Boolean.FALSE;
+        System.out.println("productId - " + productId);
+        System.out.println("baseProductId - " + baseProductId);
         productId = baseProductId;
+        System.out.println("productId - " + productId);
         retrofit2.Response<Product> response = productService
                 .modifyProduct(product.withCategoryTitle(categoryType.getTitle()).withId(productId))
                 .execute();
@@ -95,6 +124,8 @@ public class ProductTests {
     @SneakyThrows
     @ParameterizedTest
     @EnumSource(CategoryType.class)
+    @DisplayName("Product PUT Negative Test")
+    @Order(7)
     void modifyProductNegativeTest(CategoryType categoryType) {
         deleteFlag = Boolean.FALSE;
         Integer tmpId = faker.random().nextInt(minNegId, maxNegId);
@@ -107,6 +138,8 @@ public class ProductTests {
 
     @SneakyThrows
     @Test
+    @DisplayName("Product POST Negative Test")
+    @Order(8)
     void createNewProductNegativeTest() {
         deleteFlag = Boolean.FALSE;
         Integer tmpId = faker.random().nextInt(minNegId, maxNegId);
@@ -119,6 +152,8 @@ public class ProductTests {
 
     @SneakyThrows
     @Test
+    @DisplayName("Product DELETE Negative Test")
+    @Order(9)
     void deleteNegativeTest() {
         deleteFlag = Boolean.FALSE;
         Integer tmpId = faker.random().nextInt(minNegId, maxNegId);

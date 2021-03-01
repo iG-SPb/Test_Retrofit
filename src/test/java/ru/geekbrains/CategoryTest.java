@@ -2,6 +2,7 @@ package ru.geekbrains;
 
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -27,6 +28,7 @@ public class CategoryTest {
 
     @ParameterizedTest
     @EnumSource(CategoryType.class)
+    @DisplayName("Category Positive Test")
     //@Step("test Post positive")
     void getCategoryPositiveTest(CategoryType categoryType) throws IOException {
         Response<Category> response = categoryService
@@ -38,6 +40,7 @@ public class CategoryTest {
     }
 
     @Test
+    @DisplayName("Category Negative Test")
     void getCategoryNegativeTest() throws IOException {
         Integer tmpId = faker.random().nextInt(minNegId, maxNegId);
         Response<Category> response = categoryService
@@ -46,5 +49,4 @@ public class CategoryTest {
         assert response.body() == null;
         assertThat(response.code()).as("Not response").isEqualTo(404);
     }
-
 }
