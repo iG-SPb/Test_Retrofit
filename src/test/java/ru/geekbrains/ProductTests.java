@@ -2,6 +2,7 @@ package ru.geekbrains;
 
 import com.github.javafaker.Faker;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.ResponseBody;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.geekbrains.util.ConfigUtils.*;
 
+@Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ProductTests {
     Integer productId;

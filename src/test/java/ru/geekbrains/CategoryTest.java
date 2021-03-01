@@ -1,6 +1,7 @@
 package ru.geekbrains;
 
 import com.github.javafaker.Faker;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.geekbrains.util.ConfigUtils.maxNegId;
 import static ru.geekbrains.util.ConfigUtils.minNegId;
 
+@Slf4j
 public class CategoryTest {
     static CategoryService categoryService;
     static Faker faker = new Faker();
