@@ -14,7 +14,7 @@ public class PrettyLogger implements HttpLoggingInterceptor.Logger {
     @Override
     public void log(String message) {
         String trimmedMessage = message.trim();
-        if((trimmedMessage.startsWith("{") && trimmedMessage.endsWith("}"))
+        if ((trimmedMessage.startsWith("{") && trimmedMessage.endsWith("}"))
         || (trimmedMessage.startsWith("[") && trimmedMessage.endsWith("]"))) {
             try {
                 Object value = mapper.readValue(message, Object.class);
