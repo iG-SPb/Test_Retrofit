@@ -10,7 +10,7 @@ import ru.geekbrains.db.model.Products;
 import ru.geekbrains.db.model.ProductsExample;
 import ru.geekbrains.util.DbUtils;
 
-public class Main {
+public class ExampleForMe {
 
     static Faker faker = new Faker();
     private static  String resource = "mybatisConfig.xml";
@@ -30,6 +30,7 @@ public class Main {
         categoriesMapper.insert(newCategory);
 
         categoriesMapper.deleteByPrimaryKey(1);
+
 
 
 

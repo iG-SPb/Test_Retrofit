@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import retrofit2.Response;
 import ru.geekbrains.base.enums.CategoryType;
 import ru.geekbrains.db.dao.CategoriesMapper;
+import ru.geekbrains.db.model.Categories;
 import ru.geekbrains.db.model.CategoriesExample;
 import ru.geekbrains.dto.Category;
 import ru.geekbrains.service.CategoryService;
@@ -18,8 +19,10 @@ import ru.geekbrains.util.RetrofitUtils;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static ru.geekbrains.util.ConfigUtils.maxNegId;
 import static ru.geekbrains.util.ConfigUtils.minNegId;
 
@@ -45,8 +48,11 @@ public class MyBatisCategoryTest {
                 .execute();
         assertThat(response.isSuccessful()).isTrue();
         assert response.body() != null;
+
+        //categoriesMapper.selectByPrimaryKey(response.body().getId());
+
         System.out.println("count: - " + Math.toIntExact((categoriesMapper.countByExample(example))));
-        System.out.println(categoriesMapper.selectByPrimaryKey(categoryType.getId()));
+        System.out.println();
         //assertThat(response.body().getId()).as("Response is 1 or 2").isEqualTo(categoryType.getId());
     }
 
