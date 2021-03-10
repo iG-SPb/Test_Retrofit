@@ -1,6 +1,7 @@
 package ru.geekbrains;
 
 import com.github.javafaker.Faker;
+import groovyjarjarantlr4.v4.parse.BlockSetTransformer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ru.geekbrains.util.ConfigUtils.maxNegId;
 import static ru.geekbrains.util.ConfigUtils.minNegId;
 
@@ -49,21 +51,30 @@ public class MyBatisCategoryTest {
         assertThat(response.isSuccessful()).isTrue();
         assert response.body() != null;
 
-        //categoriesMapper.selectByPrimaryKey(response.body().getId());
-
-        System.out.println("count: - " + Math.toIntExact((categoriesMapper.countByExample(example))));
-        System.out.println();
-        //assertThat(response.body().getId()).as("Response is 1 or 2").isEqualTo(categoryType.getId());
+        Integer mytestId = categoriesMapper.selectByPrimaryKey(categoryType.getId()).getId();
+        assertThat(response.body().getId()).as("Response is 1 or 2").isEqualTo(mytestId);
     }
 
     @Test
     @DisplayName("Category Negative Test")
     void getCategoryNegativeTest() throws IOException {
+        List<Categories> myLists = categoriesMapper.selectByExample(example);
         Integer tmpId = faker.random().nextInt(minNegId, maxNegId);
+
         Response<Category> response = categoryService
                 .getCategory(tmpId)
                 .execute();
         assert response.body() == null;
+
+        Integer searchId = 0;
+        for (Categories myList : myLists) {
+            if (myList.getId() == tmpId) {
+                searchId = 1;
+                break;
+            }
+        }
+
+        assertTrue(searchId.equals(0));
         assertThat(response.code()).as("Not response").isEqualTo(404);
     }
 }
