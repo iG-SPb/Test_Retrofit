@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import retrofit2.Response;
 import ru.geekbrains.base.enums.CategoryType;
+import ru.geekbrains.base.enums.MyAddCategoryType;
 import ru.geekbrains.db.dao.CategoriesMapper;
 import ru.geekbrains.db.model.Categories;
 import ru.geekbrains.db.model.CategoriesExample;
@@ -43,7 +44,6 @@ public class MyBatisCategoryTest {
     @ParameterizedTest
     @EnumSource(CategoryType.class)
     @DisplayName("Category Positive Test")
-    //@Step("test Post positive")
     void getCategoryPositiveTest(CategoryType categoryType) throws IOException {
         Response<Category> response = categoryService
                 .getCategory(categoryType.getId())
