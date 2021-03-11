@@ -4,15 +4,25 @@ import com.github.javafaker.Faker;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.ResponseBody;
+import org.apache.ibatis.jdbc.Null;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import ru.geekbrains.base.enums.CategoryType;
+import ru.geekbrains.db.dao.CategoriesMapper;
+import ru.geekbrains.db.dao.ProductsMapper;
+import ru.geekbrains.db.model.Categories;
+import ru.geekbrains.db.model.CategoriesExample;
+import ru.geekbrains.db.model.Products;
+import ru.geekbrains.db.model.ProductsExample;
 import ru.geekbrains.dto.Product;
+import ru.geekbrains.service.CategoryService;
 import ru.geekbrains.service.ProductService;
+import ru.geekbrains.util.DbUtils;
 import ru.geekbrains.util.RetrofitUtils;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.geekbrains.util.ConfigUtils.*;
@@ -25,7 +35,8 @@ public class MyBatisProductTests {
     public static Boolean deleteFlag;
     static ProductService productService;
     Product product;
-
+    ProductsMapper productsMapper = DbUtils.getProductsMapper();
+    ProductsExample example = new ProductsExample();
 
     @SneakyThrows
     @BeforeAll
@@ -35,10 +46,17 @@ public class MyBatisProductTests {
 
     @BeforeEach
     void setUp() {
+
         product = new Product()
                 .withTitle(faker.food().ingredient())
                 .withPrice(faker.random().nextInt(minNegId, maxNegId));
-                //.withCategoryTitle(CategoryType.FOOD.getTitle());
+/*
+        Products newProduct = new Products();
+        newProduct.setTitle(faker.food().ingredient());
+        newProduct.setPrice(faker.random().nextInt(minNegId, maxNegId));
+        newProduct.setCategory_id((long) CategoryType.FOOD.getId());
+        productsMapper.insert(newProduct);
+*/
     }
 
     @SneakyThrows
@@ -167,7 +185,11 @@ public class MyBatisProductTests {
     @AfterEach
     void tearDown() {
         if (deleteFlag) {
-            try {
+
+        productsMapper.deleteByPrimaryKey((long) productId);
+        assertThat(productsMapper.selectByPrimaryKey((long) productId)).isNull();
+
+/*            try {
                 retrofit2.Response<ResponseBody> response =
                         productService.deleteProduct(productId)
                                 .execute();
@@ -175,6 +197,7 @@ public class MyBatisProductTests {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+*/
         }
     }
 }

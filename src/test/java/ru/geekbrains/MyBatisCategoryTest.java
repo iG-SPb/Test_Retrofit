@@ -1,7 +1,6 @@
 package ru.geekbrains;
 
 import com.github.javafaker.Faker;
-import groovyjarjarantlr4.v4.parse.BlockSetTransformer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +9,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import retrofit2.Response;
 import ru.geekbrains.base.enums.CategoryType;
-import ru.geekbrains.base.enums.MyAddCategoryType;
 import ru.geekbrains.db.dao.CategoriesMapper;
 import ru.geekbrains.db.model.Categories;
 import ru.geekbrains.db.model.CategoriesExample;
@@ -18,14 +16,10 @@ import ru.geekbrains.dto.Category;
 import ru.geekbrains.service.CategoryService;
 import ru.geekbrains.util.DbUtils;
 import ru.geekbrains.util.RetrofitUtils;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static ru.geekbrains.util.ConfigUtils.maxNegId;
 import static ru.geekbrains.util.ConfigUtils.minNegId;
 
@@ -65,7 +59,9 @@ public class MyBatisCategoryTest {
                 .getCategory(tmpId)
                 .execute();
         assert response.body() == null;
+        assertThat(response.code()).as("Not response").isEqualTo(404);
 
+        // поиск id в базе
         Integer searchId = 0;
         for (Categories myList : myLists) {
             if (myList.getId() == tmpId) {
@@ -73,8 +69,6 @@ public class MyBatisCategoryTest {
                 break;
             }
         }
-
-        assertTrue(searchId.equals(0));
-        assertThat(response.code()).as("Not response").isEqualTo(404);
+        assertThat(searchId).isEqualTo(0);
     }
 }
