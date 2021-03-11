@@ -46,17 +46,9 @@ public class MyBatisProductTests {
 
     @BeforeEach
     void setUp() {
-
         product = new Product()
                 .withTitle(faker.food().ingredient())
                 .withPrice(faker.random().nextInt(minNegId, maxNegId));
-/*
-        Products newProduct = new Products();
-        newProduct.setTitle(faker.food().ingredient());
-        newProduct.setPrice(faker.random().nextInt(minNegId, maxNegId));
-        newProduct.setCategory_id((long) CategoryType.FOOD.getId());
-        productsMapper.insert(newProduct);
-*/
     }
 
     @SneakyThrows
@@ -65,6 +57,13 @@ public class MyBatisProductTests {
     @Order(1)
     void createBaseProductPositiveTest() {
         deleteFlag = Boolean.FALSE;
+/*
+        Products newProduct = new Products();
+        newProduct.setTitle(faker.food().ingredient());
+        newProduct.setPrice(faker.random().nextInt(minNegId, maxNegId));
+        newProduct.setCategory_id((long) CategoryType.FOOD.getId());
+        productsMapper.insert(newProduct);
+*/
         retrofit2.Response<Product> response =
                 productService.createProduct(product.withCategoryTitle(CategoryType.FOOD.getTitle()))
                         .execute();
@@ -72,6 +71,8 @@ public class MyBatisProductTests {
         productId = response.body().getId();
         baseProductId = productId;
         assertThat(response.isSuccessful()).isTrue();
+
+        assertThat(productsMapper.selectByPrimaryKey((long) productId)).isNotNull();
     }
 
     @SneakyThrows
@@ -80,8 +81,9 @@ public class MyBatisProductTests {
     @Order(3)
     void getProductTest() {
         deleteFlag = Boolean.FALSE;
-        //retrofit2.Response<Product> response = productService.getProduct().execute();
-        //assertThat(response.isSuccessful()).isTrue();
+        // запрос перестал выполняться - сервер выдает 500 - swagger выполняет аналогично
+        // retrofit2.Response<Product> response = productService.getProduct().execute();
+        // assertThat(response.isSuccessful()).isTrue();
     }
 
     @SneakyThrows
@@ -92,6 +94,8 @@ public class MyBatisProductTests {
         deleteFlag = Boolean.FALSE;
         retrofit2.Response<Product> response = productService.getProductId(baseProductId).execute();
         assertThat(response.isSuccessful()).isTrue();
+
+        assertThat(productsMapper.selectByPrimaryKey((long) baseProductId)).isNotNull();
     }
 
     @SneakyThrows
@@ -103,6 +107,8 @@ public class MyBatisProductTests {
         Integer tmpId = faker.random().nextInt(minNegId, maxNegId);
         retrofit2.Response<Product> response = productService.getProductId(tmpId).execute();
         assertThat(response.code()).isEqualTo(404);
+
+        assertThat(productsMapper.selectByPrimaryKey((long) tmpId)).isNull();
     }
 
     @SneakyThrows
@@ -118,8 +124,12 @@ public class MyBatisProductTests {
         assert response.body() != null;
         productId = response.body().getId();
         baseProductId = productId;
-        System.out.println("productId - " + productId);
+        //System.out.println("productId - " + productId);
         assertThat(response.isSuccessful()).isTrue();
+
+        assertThat(productsMapper.selectByPrimaryKey((long) productId)).isNotNull();
+        assertThat((productsMapper.selectByPrimaryKey((long) productId)).getPrice()).isEqualTo(product.getPrice());
+        assertThat((productsMapper.selectByPrimaryKey((long) productId)).getTitle()).isEqualTo(product.getTitle());
     }
 
     @SneakyThrows
@@ -134,6 +144,10 @@ public class MyBatisProductTests {
                 .modifyProduct(product.withCategoryTitle(categoryType.getTitle()).withId(productId))
                 .execute();
         assertThat(response.isSuccessful()).isTrue();
+
+        assertThat(productsMapper.selectByPrimaryKey((long) productId)).isNotNull();
+        assertThat((productsMapper.selectByPrimaryKey((long) productId)).getPrice()).isEqualTo(product.getPrice());
+        assertThat((productsMapper.selectByPrimaryKey((long) productId)).getTitle()).isEqualTo(product.getTitle());
     }
 
     @SneakyThrows
@@ -149,6 +163,8 @@ public class MyBatisProductTests {
                 .execute();
         assert response.body() == null;
         assertThat(response.code()).isEqualTo(400);
+
+        assertThat(productsMapper.selectByPrimaryKey((long) tmpId)).isNull();
     }
 
     @SneakyThrows
@@ -163,6 +179,8 @@ public class MyBatisProductTests {
                         .execute();
         assert response.body() == null;
         assertThat(response.code()).isEqualTo(400);
+
+        assertThat(productsMapper.selectByPrimaryKey((long) tmpId)).isNull();
     }
 
     @SneakyThrows
@@ -180,6 +198,7 @@ public class MyBatisProductTests {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        assertThat(productsMapper.selectByPrimaryKey((long) tmpId)).isNull();
         }
 
     @AfterEach
