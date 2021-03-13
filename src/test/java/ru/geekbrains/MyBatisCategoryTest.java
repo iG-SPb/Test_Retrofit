@@ -64,7 +64,7 @@ public class MyBatisCategoryTest {
         // поиск id в базе
         Integer searchId = 0;
         for (Categories myList : myLists) {
-            if (myList.getId() == tmpId) {
+            if (myList.getId().equals(tmpId)) {
                 searchId = 1;
                 break;
             }

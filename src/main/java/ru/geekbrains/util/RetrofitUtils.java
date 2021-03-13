@@ -12,7 +12,7 @@ import java.time.Duration;
 
 @UtilityClass
 public class RetrofitUtils {
-   HttpLoggingInterceptor logging =  new HttpLoggingInterceptor(new PrettyLogger());
+    HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new PrettyLogger());
 
     public Retrofit getRetrofit() throws MalformedURLException {
         OkHttpClient client = new OkHttpClient.Builder()
